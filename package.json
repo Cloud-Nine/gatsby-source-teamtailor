@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-teamtailor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Gatsby source plugin for building websites using Teamtailor as a data source",
   "main": "index.js",
   "scripts": {
