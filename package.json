@@ -1,0 +1,40 @@
+{
+  "name": "gatsby-source-teamtailor",
+  "version": "0.1.0",
+  "description": "Gatsby source plugin for building websites using Teamtailor as a data source",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src --out-dir . --ignore **/__tests__",
+    "prepare": "cross-env NODE_ENV=production npm run build",
+    "watch": "babel -w src --out-dir . --ignore **/__tests__"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cloud-Nine/gatsby-source-teamtailor.git"
+  },
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source-plugin"
+  ],
+  "author": "Cloud Nine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cloud-Nine/gatsby-source-teamtailor/issues"
+  },
+  "homepage": "https://github.com/Cloud-Nine/gatsby-source-teamtailor#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "gatsby-node-helpers": "^0.3.0",
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-preset-gatsby-package": "^0.2.0"
+  },
+  "peerDependencies": {
+    "gatsby": "^2.0.33"
+  }
+}
