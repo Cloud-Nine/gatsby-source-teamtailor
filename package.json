@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-source-teamtailor",
+  "name": "@cloudnine/gatsby-source-teamtailor",
   "version": "0.1.0",
   "description": "Gatsby source plugin for building websites using Teamtailor as a data source",
   "main": "index.js",
