@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-teamtailor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Gatsby source plugin for building websites using Teamtailor as a data source",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
+    "@babel/runtime": "^7.5.1",
     "babel-preset-gatsby-package": "^0.2.0",
     "cross-env": "^5.2.0"
   },

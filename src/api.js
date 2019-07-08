@@ -9,9 +9,16 @@ const instance = axios.create({
   }
 })
 
-export const fetch = async ({ url, config = {} }) => {
+export const fetchJobs = async ({ config = {} }) => {
   return await instance
-    .get(`/jobs`, config)
+    .get(`/jobs?include=locations`, config)
+    .then(({ data }) => data)
+    .catch(error => { throw error });
+};
+
+export const fetchJob = async ({ url, config = {} }) => {
+  return await instance
+    .get(url, config)
     .then(({ data }) => data)
     .catch(error => { throw error });
 };
