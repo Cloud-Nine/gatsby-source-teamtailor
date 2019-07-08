@@ -1,13 +1,13 @@
-import { map } from 'lodash/fp';
-import { JobNode } from './nodes';
-import { fetchJobs, fetchJob } from './api';
+import { map, get } from 'lodash/fp';
+import { JobNode, UserNode } from './nodes';
+import { fetchJobs, fetchJob, fetchUsers } from './api';
 
 exports.sourceNodes = async ({ actions }, configOptions) => {
   const { createNode } = actions
 
   try {
 
-    const fetchConfig = {
+    const config = {
       headers: {
         Authorization: `Token token=${configOptions.token}`,
         "X-Api-Version": configOptions.version,
@@ -16,25 +16,30 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
     }
 
     // Fetch all jobs from teamtailor
-    const allJobs = await fetchJobs({ config: fetchConfig });
+    const getJobs = await fetchJobs({ config });
+    const getUsers = await fetchUsers({ config });
 
-    // Map over all jobs from the response and fetch each resource
-    return Promise.all(
-      map(async (job) => {
+    const [ allJobs, allUsers ] = await Promise.all([ getJobs, getUsers ]);
 
-        const singleJob = await fetchJob({
-          url: `/jobs/${job.id}?include=user,location`,
-          config: fetchConfig
-        });
+    map((job) => {
+      const jobNode = JobNode(job)
+      createNode(jobNode)
+    }, allJobs.data);
 
-        const jobNode = JobNode(singleJob.data)
-        createNode(jobNode);
+    map((user) => {
+      const userNode = UserNode(user)
+      createNode(userNode)
+    }, allUsers.data);
 
-      }, allJobs.data)
-    );
 
   } catch (error) {
-    console.error(error)
+    console.log('===== Gatsby Source Teamtailor =====')
+    if ( get('response.data.errors', error) ) {
+      console.log(get('response.data.errors', error));  
+    } else {
+      console.log(error);
+    }
+
     process.exit(1)
   }
 
