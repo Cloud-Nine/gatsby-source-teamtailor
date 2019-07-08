@@ -3,7 +3,7 @@ import { JobNode, UserNode } from './nodes';
 import { fetchJobs, fetchJob, fetchUsers } from './api';
 
 exports.sourceNodes = async ({ actions }, configOptions) => {
-  const { createNode } = actions
+  const { createNode, createTypes } = actions
 
   try {
 
@@ -24,6 +24,15 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
     map((job) => {
       const jobNode = JobNode(job)
       createNode(jobNode)
+
+      const typeDefs = `
+        type TeamTailorJob implements Node @infer {
+          categories: [String!]!
+        }
+      `;
+
+      createTypes(typeDefs)
+
     }, allJobs.data);
 
     map((user) => {
@@ -31,11 +40,12 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
       createNode(userNode)
     }, allUsers.data);
 
+    return;
 
   } catch (error) {
     console.log('===== Gatsby Source Teamtailor =====')
     if ( get('response.data.errors', error) ) {
-      console.log(get('response.data.errors', error));  
+      console.log(get('response.data.errors', error));
     } else {
       console.log(error);
     }
