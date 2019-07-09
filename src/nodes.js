@@ -19,7 +19,7 @@ export const JobNode = createNodeFactory(JOB_TYPE, node => {
 
   // Set new fields
   node.slug = slug;
-  node.recruiter = generateNodeId(USER_TYPE, userId);
+  node.recruiterId = generateNodeId(USER_TYPE, userId);
 
   return node
 });

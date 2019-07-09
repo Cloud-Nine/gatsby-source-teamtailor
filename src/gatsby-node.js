@@ -1,25 +1,23 @@
 import { map, get } from 'lodash/fp';
 import { JobNode, UserNode } from './nodes';
-import { fetchJobs, fetchJob, fetchUsers } from './api';
+import { createInstance, fetchJobs, getUsers } from './api';
 
 exports.sourceNodes = async ({ actions }, configOptions) => {
   const { createNode, createTypes } = actions
 
   try {
 
-    const config = {
-      headers: {
-        Authorization: `Token token=${configOptions.token}`,
-        "X-Api-Version": configOptions.version,
-        Accept: 'application/vnd.api+json'
-      }
-    }
+    createInstance({
+      Authorization: `Token token=${configOptions.token}`,
+      'X-Api-Version': configOptions.version,
+      Accept: 'application/vnd.api+json'
+    });
 
     // Fetch all jobs from teamtailor
-    const getJobs = await fetchJobs({ config });
-    const getUsers = await fetchUsers({ config });
+    const getJobs = await fetchJobs();
+    const fetchUsers = await getUsers();
 
-    const [ allJobs, allUsers ] = await Promise.all([ getJobs, getUsers ]);
+    const [ allJobs, allUsers ] = await Promise.all([ getJobs, fetchUsers ]);
 
     map((job) => {
       const jobNode = JobNode(job)
@@ -29,7 +27,7 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
     map((user) => {
       const userNode = UserNode(user)
       createNode(userNode)
-    }, allUsers.data);
+    }, allUsers);
 
     return;
 
@@ -47,19 +45,25 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
 };
 
 
-exports.createSchemaCustomization = ({ actions }) => {
+exports.createSchemaCustomization = ({ actions, schema }) => {
   const { createTypes } = actions
 
   // Explicitly define tags as an non nullable array of strings
   // this is to make sure that gatsby understand how to handle a situation
   // where tags could be an empty array
+
   const typeDefs = `
     type TeamTailorJob implements Node {
       attributes: Attributes
+      recruiter: TeamTailorUser @link(by: "id", from: "recruiterId")      
     }
 
     type Attributes {
-      tags: [String!]!
+      tags: [String!]
+    }
+
+    type TeamTailorUser implements Node {
+      teamTailorId: String
     }
   `;
 
