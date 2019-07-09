@@ -24,15 +24,6 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
     map((job) => {
       const jobNode = JobNode(job)
       createNode(jobNode)
-
-      const typeDefs = `
-        type TeamTailorJob implements Node @infer {
-          categories: [String!]!
-        }
-      `;
-
-      createTypes(typeDefs)
-
     }, allJobs.data);
 
     map((user) => {
@@ -54,3 +45,23 @@ exports.sourceNodes = async ({ actions }, configOptions) => {
   }
 
 };
+
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+
+  // Explicitly define tags as an non nullable array of strings
+  // this is to make sure that gatsby understand how to handle a situation
+  // where tags could be an empty array
+  const typeDefs = `
+    type TeamTailorJob implements Node {
+      attributes: Attributes
+    }
+
+    type Attributes {
+      tags: [String!]!
+    }
+  `;
+
+  createTypes(typeDefs);
+}
